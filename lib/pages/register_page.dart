@@ -1,18 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:twitter/components/button.dart';
+import 'package:twitter/components/loading_circle.dart';
 import 'package:twitter/components/text_field.dart';
+import 'package:twitter/services/auth/auth_service.dart';
 
-class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+class RegisterPage extends StatefulWidget {
+  final void Function()? onTap;
+
+  const RegisterPage({super.key, required this.onTap});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  //autha eriş
+  final _auth = AuthService();
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController rpasswordController = TextEditingController();
+
+  void register() async {
+    if (passwordController.text == rpasswordController.text) {
+      showLoadingCircle(context);
+      try {
+        await _auth.registerEmailPassword(
+          emailController.text,
+          passwordController.text,
+        );
+        if (mounted) hideLoadingCircle(context);
+      } catch (e) {
+        if (mounted) hideLoadingCircle(context);
+
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(title: Text(e.toString())),
+          );
+        }
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) =>
+            const AlertDialog(title: Text("Şifreler uyuşmuyor!")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController rpasswordController = TextEditingController();
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
@@ -68,14 +107,12 @@ class RegisterPage extends StatelessWidget {
                 myTextField(
                   controller: rpasswordController,
                   hintText: "Şifre (Tekrar)",
-                  obscureText: false,
+                  obscureText: true,
                 ),
-
-               
 
                 const SizedBox(height: 25),
 
-                MyButton(onTap: () {}, text: "Giriş Yap"),
+                MyButton(onTap: register, text: "Kayıt Ol"),
 
                 const SizedBox(height: 20),
 
@@ -83,16 +120,16 @@ class RegisterPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Hesabınız var mı??",
+                      "Hesabınız var mı?",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     const SizedBox(width: 7),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: widget.onTap,
                       child: Text(
-                        "Kayıt Ol!",
+                        "Giriş Yap!",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.bold,

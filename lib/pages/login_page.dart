@@ -1,17 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:twitter/components/button.dart';
+import 'package:twitter/components/loading_circle.dart';
 import 'package:twitter/components/text_field.dart';
+import 'package:twitter/services/auth/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final void Function()? onTap;
+
+  const LoginPage({super.key, required this.onTap});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  //auth servislerine eriş
+  final _auth = AuthService();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  //giriş metodu
+  void login() async {
+    showLoadingCircle(context);
+
+    try {
+      await _auth.loginEmailPassword(
+        emailController.text,
+        passwordController.text,
+      );
+      if (mounted) hideLoadingCircle(context);
+    } catch (e) {
+      if (mounted) hideLoadingCircle(context);
+      print(e.toString());
+
+      if (mounted)
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(title: Text(e.toString())),
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 25),
 
-                MyButton(onTap: () {}, text: "Giriş Yap"),
+                MyButton(onTap: login, text: "Giriş Yap"),
 
                 const SizedBox(height: 20),
 
@@ -90,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(width: 7),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: widget.onTap,
                       child: Text(
                         "Hesap oluşturun!",
                         style: TextStyle(
