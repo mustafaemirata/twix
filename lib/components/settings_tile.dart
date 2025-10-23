@@ -15,12 +15,12 @@ class mySettingsTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(23.0),
       ),
       padding: EdgeInsets.all(11.0),
+      margin: EdgeInsets.all(25.0),
 
       child: ListTile(
         title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
         trailing: action,
       ),
-      margin: EdgeInsets.all(25.0),
     );
   }
 }

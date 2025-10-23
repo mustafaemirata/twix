@@ -3,6 +3,7 @@ import 'package:twitter/components/button.dart';
 import 'package:twitter/components/loading_circle.dart';
 import 'package:twitter/components/text_field.dart';
 import 'package:twitter/services/auth/auth_service.dart';
+import 'package:twitter/services/auth/database/database_service.dart';
 
 class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
@@ -16,6 +17,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   //autha eriş
   final _auth = AuthService();
+  final _db = DatabaseService();
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -31,6 +33,12 @@ class _RegisterPageState extends State<RegisterPage> {
           passwordController.text,
         );
         if (mounted) hideLoadingCircle(context);
+
+        //kaydı yap kaydet
+        await _db.seveUserInfoFirebase(
+          name: nameController.text,
+          email: emailController.text,
+        );
       } catch (e) {
         if (mounted) hideLoadingCircle(context);
 

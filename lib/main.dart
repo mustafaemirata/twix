@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:twitter/firebase_options.dart';
 
-import 'package:twitter/pages/register_page.dart';
 import 'package:twitter/services/auth/auth_gate.dart';
-import 'package:twitter/services/auth/login_or_register.dart';
 import 'package:twitter/themes/theme_provider.dart';
 
 void main() async {

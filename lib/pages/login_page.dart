@@ -34,11 +34,12 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) hideLoadingCircle(context);
       print(e.toString());
 
-      if (mounted)
+      if (mounted) {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(title: Text(e.toString())),
         );
+      }
     }
   }
 
